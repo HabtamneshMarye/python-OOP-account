@@ -15,8 +15,6 @@ class Account:
         return self.balance
 
     def deposit(self, amount):
-        if self.frozen or self.closed:
-            return "Account is frozen or closed."
         if amount <= 0:
             return "Deposit amount must be positive."
         self.deposits.append(amount)
@@ -24,8 +22,6 @@ class Account:
         return f"Confirmed: You have received {amount}. Your new balance is {self.balance}"
 
     def withdraw(self, amount):
-        if self.frozen or self.closed:
-            return "Account is frozen or closed."
         if amount <= 0:
             return "Withdrawal amount must be positive."
         if self.balance - amount < self.min_balance:
@@ -35,8 +31,6 @@ class Account:
         return f"Confirmed: You have withdrawn {amount}. Your new balance is {self.balance}"
 
     def transfer_funds(self, amount, other_account):
-        if self.frozen or self.closed or other_account.closed:
-            return "Cannot transfer from/to a frozen or closed account."
         if amount <= 0 or self.balance - amount < self.min_balance:
             return "Invalid amount or insufficient balance."
         self.withdraw(amount)
@@ -44,8 +38,6 @@ class Account:
         return f"Transferred {amount} to {other_account.name}."
 
     def request_loan(self, amount):
-        if self.frozen or self.closed:
-            return "Cannot request loan. Account is frozen or closed."
         if amount <= 0:
             return "Loan amount must be positive."
         self.loan += amount
@@ -65,12 +57,27 @@ class Account:
     def view_account_details(self):
         return (
         f"Account Owner: {self.name}\n"
-        f"Balance: {self.balance}\n"
-        f"Loan Balance: {self.loan}\n"
-        f"Account Frozen: {self.frozen}\n"
-        f"Account Closed: {self.closed}\n"
-        f"Deposits: {self.deposits}\n"
-        f"Withdrawals: {self.withdrawals}\n"
-    )
+        f"Balance: {self.balance}"
+        )
 
-  
+    def freeze_account(self):
+        self.frozen = True
+        return "Account frozen"
+
+    def unfreeze_account(self):
+        self.frozen = False
+        return "Account unfrozen"
+
+    def set_minimum_balance(self, amount):
+        if amount >= 0:
+            Account.min_balance = amount
+            return f"Minimum balance set to {amount}"
+        return "Invalid minimum balance"
+
+    def close_account(self):
+        self.deposits.clear()
+        self.withdrawals.clear()
+        self.loan = 0
+        self.closed = True
+        return "Account closed"
+
