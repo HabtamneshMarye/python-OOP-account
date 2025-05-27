@@ -97,8 +97,5 @@ class Account:
         return "Invalid minimum balance"
 
     def close_account(self):
-        self.deposits.clear()
-        self.withdrawals.clear()
-        self.loan = 0
         self.closed = True
         return "Account closed"
