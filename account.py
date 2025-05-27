@@ -31,7 +31,7 @@ class Account:
         return f"Confirmed: You have withdrawn {amount}. Your new balance is {self.balance}"
 
     def transfer_funds(self, amount, other_account):
-        if amount <= 0 or self.balance - amount < self.min_balance:
+        if amount <= 0:
             return "Invalid amount or insufficient balance."
         self.withdraw(amount)
         other_account.deposit(amount)
@@ -59,6 +59,28 @@ class Account:
         f"Account Owner: {self.name}\n"
         f"Balance: {self.balance}"
         )
+    def change_account_owner(self, new_name):
+        self.name = new_name
+        return "Owner name updated"
+    
+    def account_statement(self):
+        print("Deposits:")
+        for d in self.deposits:
+            print(f"+ {d}")
+
+        print("Withdrawals:")
+        for w in self.withdrawals:
+            print(f"- {w}")
+
+        print(f"Loan balance: {self.loan}")
+        print(f"Current balance: {self.get_balance()}")
+
+    def apply_interest(self):
+        interest = self.get_balance() * self.interest_rate
+        if interest > 0:
+            self.deposits.append(interest)
+            return f"Interest of {interest} applied"
+            return "No interest applied"
 
     def freeze_account(self):
         self.frozen = True
@@ -80,4 +102,3 @@ class Account:
         self.loan = 0
         self.closed = True
         return "Account closed"
-
